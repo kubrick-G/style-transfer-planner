@@ -1,0 +1,874 @@
+{
+ "fonts": [
+  {
+   "name": "Montserrat",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold",
+    "black"
+   ],
+   "width": "normal",
+   "geometry": "geometric",
+   "mood": [
+    "modern",
+    "clean"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Poppins",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold",
+    "black"
+   ],
+   "width": "normal",
+   "geometry": "geometric",
+   "mood": [
+    "modern",
+    "friendly"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "League Spartan",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold",
+    "black"
+   ],
+   "width": "normal",
+   "geometry": "geometric",
+   "mood": [
+    "bold",
+    "punchy"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Outfit",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold",
+    "black"
+   ],
+   "width": "normal",
+   "geometry": "geometric",
+   "mood": [
+    "modern",
+    "clean"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Josefin Sans",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "geometric",
+   "mood": [
+    "elegant",
+    "retro"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Urbanist",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold",
+    "black"
+   ],
+   "width": "normal",
+   "geometry": "geometric",
+   "mood": [
+    "modern",
+    "clean"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "DM Sans",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "geometric",
+   "mood": [
+    "clean",
+    "modern"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Open Sans",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "humanist",
+   "mood": [
+    "friendly",
+    "clean"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Lato",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "bold",
+    "black"
+   ],
+   "width": "normal",
+   "geometry": "humanist",
+   "mood": [
+    "friendly",
+    "clean"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Nunito",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold",
+    "black"
+   ],
+   "width": "normal",
+   "geometry": "humanist",
+   "mood": [
+    "friendly",
+    "playful"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Source Sans 3",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold",
+    "black"
+   ],
+   "width": "normal",
+   "geometry": "humanist",
+   "mood": [
+    "clean",
+    "formal"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Fira Sans",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold",
+    "black"
+   ],
+   "width": "normal",
+   "geometry": "humanist",
+   "mood": [
+    "tech",
+    "clean"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Inter",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold",
+    "black"
+   ],
+   "width": "normal",
+   "geometry": "grotesque",
+   "mood": [
+    "clean",
+    "modern"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Roboto",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold",
+    "black"
+   ],
+   "width": "normal",
+   "geometry": "grotesque",
+   "mood": [
+    "clean",
+    "neutral"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Work Sans",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold",
+    "black"
+   ],
+   "width": "normal",
+   "geometry": "grotesque",
+   "mood": [
+    "clean",
+    "modern"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Space Grotesk",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "grotesque",
+   "mood": [
+    "tech",
+    "quirky"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Archivo",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold",
+    "black"
+   ],
+   "width": "normal",
+   "geometry": "grotesque",
+   "mood": [
+    "punchy",
+    "clean"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Oswald",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold"
+   ],
+   "width": "condensed",
+   "geometry": "grotesque",
+   "mood": [
+    "punchy",
+    "bold"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Bebas Neue",
+   "category": "sans",
+   "weights": [
+    "bold"
+   ],
+   "width": "condensed",
+   "geometry": "grotesque",
+   "mood": [
+    "punchy",
+    "bold",
+    "cinematic"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Anton",
+   "category": "sans",
+   "weights": [
+    "black"
+   ],
+   "width": "condensed",
+   "geometry": "grotesque",
+   "mood": [
+    "punchy",
+    "bold"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Barlow Condensed",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold",
+    "black"
+   ],
+   "width": "condensed",
+   "geometry": "grotesque",
+   "mood": [
+    "clean",
+    "punchy"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Fjalla One",
+   "category": "sans",
+   "weights": [
+    "bold"
+   ],
+   "width": "condensed",
+   "geometry": "grotesque",
+   "mood": [
+    "bold",
+    "punchy"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Archivo Black",
+   "category": "sans",
+   "weights": [
+    "black"
+   ],
+   "width": "wide",
+   "geometry": "grotesque",
+   "mood": [
+    "bold",
+    "punchy"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Unbounded",
+   "category": "sans",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold",
+    "black"
+   ],
+   "width": "wide",
+   "geometry": "geometric",
+   "mood": [
+    "modern",
+    "bold"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Syncopate",
+   "category": "sans",
+   "weights": [
+    "regular",
+    "bold"
+   ],
+   "width": "wide",
+   "geometry": "geometric",
+   "mood": [
+    "tech",
+    "modern"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Bangers",
+   "category": "display",
+   "weights": [
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "grotesque",
+   "mood": [
+    "quirky",
+    "playful"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Lilita One",
+   "category": "display",
+   "weights": [
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "humanist",
+   "mood": [
+    "playful",
+    "friendly"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Luckiest Guy",
+   "category": "display",
+   "weights": [
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "grotesque",
+   "mood": [
+    "playful",
+    "quirky"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Righteous",
+   "category": "display",
+   "weights": [
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "geometric",
+   "mood": [
+    "retro",
+    "bold"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Fredoka",
+   "category": "display",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "humanist",
+   "mood": [
+    "friendly",
+    "playful"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Playfair Display",
+   "category": "serif",
+   "weights": [
+    "regular",
+    "medium",
+    "bold",
+    "black"
+   ],
+   "width": "normal",
+   "geometry": "humanist",
+   "mood": [
+    "elegant",
+    "formal"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Merriweather",
+   "category": "serif",
+   "weights": [
+    "light",
+    "regular",
+    "bold",
+    "black"
+   ],
+   "width": "normal",
+   "geometry": "humanist",
+   "mood": [
+    "formal",
+    "clean"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Lora",
+   "category": "serif",
+   "weights": [
+    "regular",
+    "medium",
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "humanist",
+   "mood": [
+    "elegant",
+    "formal"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "DM Serif Display",
+   "category": "serif",
+   "weights": [
+    "regular"
+   ],
+   "width": "normal",
+   "geometry": "humanist",
+   "mood": [
+    "elegant",
+    "bold"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Libre Baskerville",
+   "category": "serif",
+   "weights": [
+    "regular",
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "humanist",
+   "mood": [
+    "formal",
+    "elegant"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Abril Fatface",
+   "category": "serif",
+   "weights": [
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "humanist",
+   "mood": [
+    "bold",
+    "elegant",
+    "punchy"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Roboto Slab",
+   "category": "serif",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold",
+    "black"
+   ],
+   "width": "normal",
+   "geometry": "slab",
+   "mood": [
+    "clean",
+    "bold"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Bitter",
+   "category": "serif",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold",
+    "black"
+   ],
+   "width": "normal",
+   "geometry": "slab",
+   "mood": [
+    "friendly",
+    "clean"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Zilla Slab",
+   "category": "serif",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "slab",
+   "mood": [
+    "quirky",
+    "clean"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Pacifico",
+   "category": "script",
+   "weights": [
+    "regular"
+   ],
+   "width": "normal",
+   "geometry": "humanist",
+   "mood": [
+    "playful",
+    "retro",
+    "friendly"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Dancing Script",
+   "category": "script",
+   "weights": [
+    "regular",
+    "medium",
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "humanist",
+   "mood": [
+    "elegant",
+    "friendly"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Satisfy",
+   "category": "script",
+   "weights": [
+    "regular"
+   ],
+   "width": "normal",
+   "geometry": "humanist",
+   "mood": [
+    "retro",
+    "elegant"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Great Vibes",
+   "category": "script",
+   "weights": [
+    "regular"
+   ],
+   "width": "normal",
+   "geometry": "humanist",
+   "mood": [
+    "elegant",
+    "formal"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Caveat",
+   "category": "handwritten",
+   "weights": [
+    "regular",
+    "medium",
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "humanist",
+   "mood": [
+    "friendly",
+    "casual"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Permanent Marker",
+   "category": "handwritten",
+   "weights": [
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "grotesque",
+   "mood": [
+    "bold",
+    "quirky",
+    "punchy"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Kalam",
+   "category": "handwritten",
+   "weights": [
+    "light",
+    "regular",
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "humanist",
+   "mood": [
+    "casual",
+    "friendly"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Space Mono",
+   "category": "mono",
+   "weights": [
+    "regular",
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "geometric",
+   "mood": [
+    "tech",
+    "quirky",
+    "retro"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "JetBrains Mono",
+   "category": "mono",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold",
+    "black"
+   ],
+   "width": "normal",
+   "geometry": "grotesque",
+   "mood": [
+    "tech",
+    "clean"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "IBM Plex Mono",
+   "category": "mono",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "slab",
+   "mood": [
+    "tech",
+    "clean",
+    "formal"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Roboto Mono",
+   "category": "mono",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "grotesque",
+   "mood": [
+    "tech",
+    "clean"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Courier Prime",
+   "category": "mono",
+   "weights": [
+    "regular",
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "slab",
+   "mood": [
+    "retro",
+    "typewriter",
+    "formal"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "Fira Code",
+   "category": "mono",
+   "weights": [
+    "light",
+    "regular",
+    "medium",
+    "bold"
+   ],
+   "width": "normal",
+   "geometry": "grotesque",
+   "mood": [
+    "tech",
+    "clean"
+   ],
+   "license": "OFL (Google Fonts)"
+  },
+  {
+   "name": "DM Mono",
+   "category": "mono",
+   "weights": [
+    "light",
+    "regular",
+    "medium"
+   ],
+   "width": "normal",
+   "geometry": "geometric",
+   "mood": [
+    "clean",
+    "tech"
+   ],
+   "license": "OFL (Google Fonts)"
+  }
+ ]
+}

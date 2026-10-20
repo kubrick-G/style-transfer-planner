@@ -1,0 +1,13 @@
+# Stage 1 dependencies (versions verified in the build sandbox; Python 3.11+)
+numpy>=2.0,<3
+opencv-python-headless>=4.9
+scenedetect>=0.6.4
+librosa>=0.10
+scipy>=1.11
+scikit-learn>=1.4
+soundfile>=0.12
+pydantic>=2.6,<3
+google-genai>=1.0
+pytest>=8.0
+pillow>=10.1
+streamlit>=1.36
