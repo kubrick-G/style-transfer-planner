@@ -196,3 +196,22 @@ def test_sidebar_usage_cap_display_and_exhausted_state(env, monkeypatch, tmp_pat
     assert any("Daily limit reached" in err.value for err in at_exhausted.sidebar.error)
 
 
+def test_app_public_mode_hardening(env, monkeypatch):
+    monkeypatch.setenv("STP_PUBLIC_MODE", "1")
+    monkeypatch.delenv("STP_ALLOW_ANALYSIS", raising=False)
+
+    at = run_app()
+    assert not at.exception
+    # Privacy notice in sidebar
+    assert any("Privacy Notice" in info.value for info in at.sidebar.info)
+    # Analysis is disabled for visitors
+    ref_opts = at.selectbox(key="ref_choice").options
+    assert "➕ Analyze a new reference video…" not in ref_opts
+
+    # Allowing analysis enables it
+    monkeypatch.setenv("STP_ALLOW_ANALYSIS", "1")
+    at2 = run_app()
+    assert not at2.exception
+    assert "➕ Analyze a new reference video…" in at2.selectbox(key="ref_choice").options
+
+

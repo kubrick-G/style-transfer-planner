@@ -24,6 +24,10 @@ from core.ui_helpers import (VIDEO_EXTS, attribute_rows, card_metrics, cards_dir
                              list_cards, list_transcripts, list_videos, load_card, palette_html, plan_frame, results_dir, safe_stem,
                              scene_frame, timeline_chart, videos_dir)
 from core.usage_cap import CappedGeminiClient, UsageCap  # noqa: E402
+from core.hardening import (JobBusyError, PRIVACY_NOTICE, allow_analysis, apply_timeout_seconds,  # noqa: E402
+                            cleanup_old_files, heavy_job_semaphore, is_public_mode,
+                            max_clip_seconds, max_upload_bytes, save_upload_safe,
+                            validate_clip_duration)
 from core.utils import AnalysisError  # noqa: E402
 from scripts.analyze_cli import _load_dotenv  # noqa: E402
 
@@ -67,16 +71,18 @@ def enable(attr: str) -> None:
     ss[f"sel_{attr}"] = True
 
 
-def save_upload(upload, subdir: str) -> Path:
-    d = results_dir() / subdir
-    d.mkdir(parents=True, exist_ok=True)
-    p = d / Path(upload.name).name
-    if not p.exists() or p.stat().st_size != upload.size:
-        p.write_bytes(upload.getbuffer())
-    return p
+def save_upload(upload, subdir: str) -> Optional[Path]:
+    try:
+        return save_upload_safe(upload, results_dir(), subdir)
+    except Exception as e:
+        st.error(str(e))
+        return None
 
 
 # ------------------------------------------------------------------------------------------------ state
+if is_public_mode():
+    cleanup_old_files(results_dir(), max_age_s=3600.0)
+
 if "_pending_ref" in ss:                                # set by a finished analysis, applied BEFORE the widget exists
     ss["ref_choice"] = ss.pop("_pending_ref")
 ss.setdefault("result", None)
@@ -105,6 +111,8 @@ with st.sidebar:
                  "**Still works:** Applying styles from existing or demo cards, color match, pacing cuts, beat sync, and captions from uploaded or bundled transcripts.")
     else:
         st.success(f"Gemini key found · model `{probe.model}`")
+    if is_public_mode():
+        st.info(PRIVACY_NOTICE)
     st.caption("Analysing a new reference uses ~7-10 Gemini requests (cached afterwards). Auto-captions use 1. "
                "Everything else runs locally.")
 
@@ -117,11 +125,13 @@ with tab_in:
     left, right = st.columns(2)
     with left:
         st.subheader("Reference · the style to copy")
-        options = list(cards) + [NEW]
+        options = (list(cards) + [NEW]) if allow_analysis() else list(cards)
         ref_choice = st.selectbox("Reference style card", options, key="ref_choice",
                                   help="Cards are saved in outputs/ by analyze_cli.py or by this app.")
+        if is_public_mode() and not allow_analysis():
+            st.caption("ℹ️ In public demo mode, analyzing new references is disabled. Choose from the demo reference styles above.")
         if ref_choice == NEW:
-            st.caption("Pick a video to analyse, or upload one (max 60 s).")
+            st.caption(f"Pick a video to analyse, or upload one (max {max_clip_seconds():.0f} s).")
             src_name = st.selectbox("Video to analyse", list(videos) or ["(no videos in data/examples)"], key="an_src")
             up = st.file_uploader("…or upload a reference", type=[e[1:] for e in VIDEO_EXTS], key="an_upload")
             src = save_upload(up, "uploads") if up else videos.get(src_name)
@@ -129,13 +139,17 @@ with tab_in:
                 with st.status("Analysing the reference…", expanded=True) as status:
                     bar = st.progress(0.0, text="starting")
                     try:
-                        card_new = analyze_video(src, client=CappedGeminiClient(usage_cap=cap),
-                                                 progress=lambda stage, f: bar.progress(min(f, 1.0), text=stage))
-                        out = cards_dir() / f"{safe_stem(src.name)}.stylecard.json"
-                        out.parent.mkdir(parents=True, exist_ok=True)
-                        out.write_text(card_new.model_dump_json(indent=2), encoding="utf-8")
-                        ss["_pending_ref"] = safe_stem(src.name)
-                        status.update(label="Done", state="complete")
+                        validate_clip_duration(src)
+                        with heavy_job_semaphore(results_dir() / ".heavy_job.lock"):
+                            card_new = analyze_video(src, client=CappedGeminiClient(usage_cap=cap),
+                                                     progress=lambda stage, f: bar.progress(min(f, 1.0), text=stage))
+                            out = cards_dir() / f"{safe_stem(src.name)}.stylecard.json"
+                            out.parent.mkdir(parents=True, exist_ok=True)
+                            out.write_text(card_new.model_dump_json(indent=2), encoding="utf-8")
+                            ss["_pending_ref"] = safe_stem(src.name)
+                            if is_public_mode():
+                                cleanup_old_files(results_dir(), max_age_s=3600.0)
+                            status.update(label="Done", state="complete")
                     except (AnalysisError, ValueError, RuntimeError) as e:
                         status.update(label="Analysis failed", state="error")
                         st.error(str(e))
@@ -282,22 +296,26 @@ with tab_borrow:
             with st.status("Applying the style…", expanded=True) as status:
                 st.write("Measuring the clip, planning cuts, matching color and rendering (about a minute)…")
                 try:
-                    client = None
-                    if "text" in selected and words is None:
-                        c = CappedGeminiClient(usage_cap=cap)
-                        client = c if c.available else None
-                    res = apply_style(card, target_path, selected, str(out), strength=strength, zoom=zoom, client=client,
-                                      transcript=words, caption_offset_s=float(offset), words_per_caption=int(wpc) or None,
-                                      auto_sync=bool(auto_sync))
-                    dbg_video = dbg_sheet = None
-                    if debug and res.output_path and res.plan.cut_times_s:
-                        dbg_video = annotate_cuts(res.output_path, res.plan.cut_times_s, res.plan.segment_zooms,
-                                                  out.with_name(out.stem + "_debug.mp4"))
-                        dbg_sheet = cut_sheet(res.output_path, res.plan.cut_times_s, res.plan.segment_zooms,
-                                              out.with_name(out.stem + "_cuts.png"))
-                    ss["result"] = {"res": res, "ref": ref_choice, "target": target_path, "debug_video": dbg_video,
-                                    "debug_sheet": dbg_sheet}
-                    status.update(label="Done. Open the Result tab ④", state="complete")
+                    validate_clip_duration(target_path)
+                    with heavy_job_semaphore(results_dir() / ".heavy_job.lock"):
+                        client = None
+                        if "text" in selected and words is None:
+                            c = CappedGeminiClient(usage_cap=cap)
+                            client = c if c.available else None
+                        res = apply_style(card, target_path, selected, str(out), strength=strength, zoom=zoom, client=client,
+                                          transcript=words, caption_offset_s=float(offset), words_per_caption=int(wpc) or None,
+                                          auto_sync=bool(auto_sync), timeout_s=apply_timeout_seconds())
+                        dbg_video = dbg_sheet = None
+                        if debug and res.output_path and res.plan.cut_times_s:
+                            dbg_video = annotate_cuts(res.output_path, res.plan.cut_times_s, res.plan.segment_zooms,
+                                                      out.with_name(out.stem + "_debug.mp4"))
+                            dbg_sheet = cut_sheet(res.output_path, res.plan.cut_times_s, res.plan.segment_zooms,
+                                                  out.with_name(out.stem + "_cuts.png"))
+                        ss["result"] = {"res": res, "ref": ref_choice, "target": target_path, "debug_video": dbg_video,
+                                        "debug_sheet": dbg_sheet}
+                        if is_public_mode():
+                            cleanup_old_files(results_dir(), max_age_s=3600.0)
+                        status.update(label="Done. Open the Result tab ④", state="complete")
                 except (AnalysisError, ValueError, RuntimeError) as e:
                     status.update(label="Failed", state="error")
                     st.error(str(e))

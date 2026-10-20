@@ -314,11 +314,17 @@ def apply_style(reference: StyleCard, target_path, selected: set[str] | list[str
                 strength: float = 0.8, zoom: float = DEFAULT_ZOOM, snap_beats: Optional[bool] = None,
                 client: Optional[GeminiClient] = None, transcript: Optional[list[TranscriptWord]] = None,
                 caption_offset_s: float = 0.0, words_per_caption: Optional[int] = None,
-                auto_sync: bool = False) -> ApplyResult:
+                auto_sync: bool = False, timeout_s: Optional[float] = None) -> ApplyResult:
     t0 = time.perf_counter()
+
+    def _check_timeout():
+        if timeout_s is not None and (time.perf_counter() - t0) > timeout_s:
+            raise AnalysisError(f"Style transfer exceeded the time budget of {timeout_s:.0f}s")
+
     sel = set(selected)
     warnings = check_selection(sel, reference)
     info = analyze_target(target_path)
+    _check_timeout()
     o = reference.overall
     items: list[PlanItem] = []
     fallbacks: list[FallbackEntry] = []
@@ -375,6 +381,7 @@ def apply_style(reference: StyleCard, target_path, selected: set[str] | list[str
 
     # ---- color
     if "color" in sel:
+        _check_timeout()
         ref_stats = o.color.stats
         if ref_stats and all(k in ref_stats for k in STAT_KEYS):
             grade, calib_hist, before_stats = calibrate_pipeline(target_path, info, cuts, zooms, ref_stats, strength)
@@ -487,6 +494,7 @@ def apply_style(reference: StyleCard, target_path, selected: set[str] | list[str
                        items=items, fallbacks=fallbacks, warnings=warnings, cut_times_s=cuts, segment_zooms=zooms)
     output, match = None, None
     if out_path and (cuts or grade is not None or caption_job):
+        _check_timeout()
         if caption_job:
             caps, cstyle, lf = caption_job
             with temp_workdir() as tmp:
