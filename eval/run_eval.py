@@ -68,7 +68,6 @@ def match_cut_times(truth_cuts: list[float], pred_cuts: list[float], tol_s: floa
 
 
 def evaluate_labels(truth_list: list[dict[str, Any]], cards: dict[str, StyleCard]) -> dict[str, Any]:
-    discrete_attrs = ["layout", "color_grade", "caption_position", "text_animation", "font_category"]
     correct: dict[str, int] = defaultdict(int)
     total: dict[str, int] = defaultdict(int)
 

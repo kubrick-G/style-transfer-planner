@@ -19,7 +19,7 @@ sys.path.insert(0, str(ROOT))
 
 def analyze_timing_errors(truth: list[dict[str, Any]], pred_words: list[dict[str, Any]]) -> dict[str, Any]:
     pred_map = {w["text"].strip().lower().strip(".,!?:;\"'"): float(w["start_s"]) for w in pred_words if "text" in w and "start_s" in w}
-    
+
     comparisons = []
     diffs = []
 

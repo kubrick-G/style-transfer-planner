@@ -1,0 +1,17 @@
+[tool.ruff]
+line-length = 130
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = [
+    "E501",  # line length handled by formatter
+    "E402",  # module level import not at top of file (handled by noqa or intentional sys.path modification)
+    "E741",  # ambiguous variable name
+    "E731",  # do not assign a lambda expression
+    "F401",  # unused imports in __init__
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

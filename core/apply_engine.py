@@ -31,7 +31,7 @@ from .scenes import detect_scenes
 from .schema import StyleCard
 from .sync_check import analyze_sync, corrected_words, extract_audio
 from .transcript import TranscriptWord, transcribe
-from .utils import MAX_DURATION_S, InvalidVideoError, VideoTooLongError, ffprobe_info, run, temp_workdir
+from .utils import AnalysisError, MAX_DURATION_S, InvalidVideoError, VideoTooLongError, ffprobe_info, run, temp_workdir
 
 RENDERED_TRANSITIONS = {"hard cut", "zoom punch-in"}
 DEFAULT_ZOOM = 1.15
