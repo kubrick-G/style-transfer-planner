@@ -1,4 +1,4 @@
-# Stage 1 dependencies (versions verified in the build sandbox; Python 3.11+)
+# Runtime dependencies for Style Transfer Planner (verified on Python 3.12 - 3.14)
 numpy>=2.0,<3
 opencv-python-headless>=4.9
 scenedetect>=0.6.4
@@ -8,6 +8,7 @@ scikit-learn>=1.4
 soundfile>=0.12
 pydantic>=2.6,<3
 google-genai>=1.0
-pytest>=8.0
 pillow>=10.1
 streamlit>=1.36
+pandas>=2.0
+altair>=5.0

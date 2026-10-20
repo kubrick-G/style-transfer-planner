@@ -31,7 +31,23 @@ from core.hardening import (JobBusyError, PRIVACY_NOTICE, allow_analysis, apply_
 from core.utils import AnalysisError  # noqa: E402
 from scripts.analyze_cli import _load_dotenv  # noqa: E402
 
+
+def _load_st_secrets() -> None:
+    """Read secrets from st.secrets as fallback to environment variables without logging or printing."""
+    try:
+        for k in ("GEMINI_API_KEY", "GOOGLE_API_KEY", "GEMINI_MODEL", "GEMINI_MIN_INTERVAL_S",
+                  "STP_PUBLIC_MODE", "STP_DAILY_GEMINI_LIMIT", "STP_ALLOW_ANALYSIS",
+                  "STP_MAX_CLIP_S", "STP_MAX_UPLOAD_MB"):
+            if k in st.secrets and k not in os.environ:
+                val = str(st.secrets[k]).strip()
+                if val:
+                    os.environ[k] = val
+    except Exception:
+        pass
+
+
 _load_dotenv()
+_load_st_secrets()
 st.set_page_config(page_title="Style Transfer Planner", page_icon="🎬", layout="wide")
 ss = st.session_state
 NEW = "➕ Analyze a new reference video…"
