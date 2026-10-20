@@ -1,0 +1,16 @@
+[
+  {
+    "clip": "example_clip.mp4",
+    "notes": "Human ground truth for evaluating Style Card extraction accuracy",
+    "layout": "full-frame",
+    "color_grade": "warm-contrast",
+    "caption_position": "lower-third",
+    "text_animation": "none",
+    "font_category": "sans-serif",
+    "bpm": 128.0,
+    "scene_count": 5,
+    "cut_times_s": [1.5, 3.2, 4.8, 6.4],
+    "shot_types": ["medium", "close-up", "medium", "close-up", "wide"],
+    "transition_types": ["hard cut", "zoom punch-in", "hard cut", "hard cut"]
+  }
+]
