@@ -23,6 +23,7 @@ from core.transcript import TranscriptWord, clean_words  # noqa: E402
 from core.ui_helpers import (VIDEO_EXTS, attribute_rows, card_metrics, cards_dir, fallback_frame, font_preview_html,  # noqa: E402
                              list_cards, list_transcripts, list_videos, load_card, palette_html, plan_frame, results_dir, safe_stem,
                              scene_frame, timeline_chart, videos_dir)
+from core.usage_cap import CappedGeminiClient, UsageCap  # noqa: E402
 from core.utils import AnalysisError  # noqa: E402
 from scripts.analyze_cli import _load_dotenv  # noqa: E402
 
@@ -82,7 +83,10 @@ ss.setdefault("result", None)
 for _a in ATTRIBUTES:
     ss.setdefault(f"sel_{_a}", True)
 
-probe = GeminiClient()
+cap = UsageCap()
+probe = CappedGeminiClient(usage_cap=cap)
+has_key = bool(probe.api_key)
+rem = cap.remaining()
 gemini_ok = probe.available
 
 with st.sidebar:
@@ -91,11 +95,16 @@ with st.sidebar:
     st.markdown("**How it works**\n1. Pick a reference whose style you like (its *style card* is measured by code + Gemini).\n"
                 "2. Pick your clip.\n3. Choose which attributes to borrow; the app warns about combinations that may feel off.\n"
                 "4. Apply, then review the result, the plan and the fallback log.")
-    if gemini_ok:
-        st.success(f"Gemini key found · model `{probe.model}`")
-    else:
+    st.metric("Gemini requests left today", f"{rem} / {cap.daily_limit}")
+    if not has_key:
         st.warning("No `GEMINI_API_KEY` found (put it in `.env`). You can still apply styles from existing cards; "
                    "analysing new references and auto-captions need Gemini.")
+    elif rem <= 0:
+        st.error(f"Gemini requests left today: 0. Daily limit reached ({cap.daily_limit}/{cap.daily_limit}). "
+                 "**Disabled:** Analysing new reference videos and auto-captions are disabled until UTC midnight. "
+                 "**Still works:** Applying styles from existing or demo cards, color match, pacing cuts, beat sync, and captions from uploaded or bundled transcripts.")
+    else:
+        st.success(f"Gemini key found · model `{probe.model}`")
     st.caption("Analysing a new reference uses ~7-10 Gemini requests (cached afterwards). Auto-captions use 1. "
                "Everything else runs locally.")
 
@@ -120,7 +129,7 @@ with tab_in:
                 with st.status("Analysing the reference…", expanded=True) as status:
                     bar = st.progress(0.0, text="starting")
                     try:
-                        card_new = analyze_video(src, client=GeminiClient(),
+                        card_new = analyze_video(src, client=CappedGeminiClient(usage_cap=cap),
                                                  progress=lambda stage, f: bar.progress(min(f, 1.0), text=stage))
                         out = cards_dir() / f"{safe_stem(src.name)}.stylecard.json"
                         out.parent.mkdir(parents=True, exist_ok=True)
@@ -258,8 +267,12 @@ with tab_borrow:
                                          "only when the estimate is confident. It cannot fix a short run of late words.")
             debug = st.checkbox("Also create a debug video (red flash at every cut) and a before/after strip per cut")
         if "text" in selected and words is None:
-            st.info("Captions need a transcript: the app will transcribe with Gemini (1 request)." if gemini_ok else
-                    "No Gemini key and no transcript: the text attribute will be a plan only, not rendered.")
+            if rem <= 0 and has_key:
+                st.info("Daily Gemini limit reached: auto-captions are disabled. Select a bundled demo transcript or upload one.")
+            elif gemini_ok:
+                st.info("Captions need a transcript: the app will transcribe with Gemini (1 request).")
+            else:
+                st.info("No Gemini key and no transcript: the text attribute will be a plan only, not rendered.")
         if target_path is None:
             st.info("Pick a target clip in the first tab.")
         if st.button("Apply style", type="primary", key="apply_btn", disabled=not (target_path and selected)):
@@ -271,7 +284,7 @@ with tab_borrow:
                 try:
                     client = None
                     if "text" in selected and words is None:
-                        c = GeminiClient()
+                        c = CappedGeminiClient(usage_cap=cap)
                         client = c if c.available else None
                     res = apply_style(card, target_path, selected, str(out), strength=strength, zoom=zoom, client=client,
                                       transcript=words, caption_offset_s=float(offset), words_per_caption=int(wpc) or None,

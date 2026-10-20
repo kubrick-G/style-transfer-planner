@@ -112,6 +112,9 @@ def test_analysing_a_new_reference_saves_a_card_and_selects_it(env, monkeypatch,
     class FakeClient:
         available, model, mode = True, "fake-model", "live"
 
+        def __init__(self, *args, **kwargs):
+            self.api_key = "fake-key"
+
     seen = {}
 
     def fake_analyze(path, client=None, progress=None, **kw):
@@ -120,6 +123,8 @@ def test_analysing_a_new_reference_saves_a_card_and_selects_it(env, monkeypatch,
         return demo_card
 
     monkeypatch.setattr(gc, "GeminiClient", FakeClient)
+    import core.usage_cap as uc
+    monkeypatch.setattr(uc, "CappedGeminiClient", FakeClient)
     monkeypatch.setattr(pl, "analyze_video", fake_analyze)
     at = run_app()
     at.selectbox(key="ref_choice").set_value("➕ Analyze a new reference video…").run()
@@ -165,4 +170,29 @@ def test_zero_key_demo_flow(monkeypatch, tmp_path):
     assert res_data is not None
     assert Path(res_data["res"].output_path).exists()
     assert any("Finished" in s.value for s in at.success)
+
+
+def test_sidebar_usage_cap_display_and_exhausted_state(env, monkeypatch, tmp_path):
+    cap_file = tmp_path / "test_cap.json"
+    monkeypatch.setenv("STP_USAGE_CAP_FILE", str(cap_file))
+    monkeypatch.setenv("STP_DAILY_GEMINI_LIMIT", "10")
+    monkeypatch.setenv("GEMINI_API_KEY", "fake-key-for-test")
+
+    at = run_app()
+    assert not at.exception
+    # Verify metric in sidebar
+    m = next(m for m in at.sidebar.metric if "Gemini requests left today" in m.label)
+    assert m.value == "10 / 10"
+
+    # Now exhaust the cap
+    from core.usage_cap import UsageCap
+    c = UsageCap(path=cap_file, daily_limit=10)
+    assert c.charge(10) is True
+
+    at_exhausted = run_app()
+    assert not at_exhausted.exception
+    m_ex = next(m for m in at_exhausted.sidebar.metric if "Gemini requests left today" in m.label)
+    assert m_ex.value == "0 / 10"
+    assert any("Daily limit reached" in err.value for err in at_exhausted.sidebar.error)
+
 

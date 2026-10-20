@@ -20,6 +20,7 @@ from core.gemini_client import GeminiClient  # noqa: E402
 from core.mock_gemini import mock_backend  # noqa: E402
 from core.pipeline import DEFAULT_CACHE_DIR, analyze_video  # noqa: E402
 from core.schema import StyleCard  # noqa: E402
+from core.usage_cap import CappedGeminiClient  # noqa: E402
 from core.utils import AnalysisError  # noqa: E402
 
 
@@ -104,7 +105,7 @@ def main(argv=None) -> int:
     ap.add_argument("--quiet", action="store_true")
     a = ap.parse_args(argv)
     _load_dotenv()
-    client = GeminiClient(backend=mock_backend, mode="mock") if a.mock_gemini else GeminiClient()
+    client = GeminiClient(backend=mock_backend, mode="mock") if a.mock_gemini else CappedGeminiClient()
     rc = 0
     for v in a.videos:
         print(f"\n=== {v}")
