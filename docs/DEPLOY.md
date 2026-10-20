@@ -13,14 +13,14 @@ Streamlit Community Cloud is the fastest way to host the public interactive demo
    - Create a repository (e.g. `style-transfer-planner`) on GitHub.
    - Push your code to the `master` or `main` branch:
      ```bash
-     git remote add origin https://github.com/<your-username>/style-transfer-planner.git
+     git remote add origin https://github.com/kubrick-G/style-transfer-planner.git
      git push -u origin master
      ```
 2. **Sign in to Streamlit Community Cloud**:
    - Go to [share.streamlit.io](https://share.streamlit.io) and sign in with your GitHub account.
 3. **Deploy the App**:
    - Click **"Create app"** or **"Deploy an app"**.
-   - Select your repository (`<your-username>/style-transfer-planner`), branch (`master`), and Main file path (`app.py`).
+   - Select your repository (`kubrick-G/style-transfer-planner`), branch (`master`), and Main file path (`app.py`).
 4. **Configure Secrets & Public-Mode Settings**:
    - Click **"Advanced settings"** -> **"Secrets"**.
    - Paste the following configuration (replace with your rotated Gemini API key):

@@ -72,7 +72,7 @@ flowchart TD
 ### 2. Installation
 ```powershell
 # Clone the repository
-git clone https://github.com/<your-username>/style-transfer-planner.git
+git clone https://github.com/kubrick-G/style-transfer-planner.git
 cd style-transfer-planner
 
 # Create and activate virtual environment
