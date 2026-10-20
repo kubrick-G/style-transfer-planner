@@ -1,0 +1,57 @@
+[
+  {
+    "text": "Welcome",
+    "start_s": 0.2,
+    "end_s": 0.8
+  },
+  {
+    "text": "to",
+    "start_s": 0.9,
+    "end_s": 1.1
+  },
+  {
+    "text": "the",
+    "start_s": 1.15,
+    "end_s": 1.35
+  },
+  {
+    "text": "style",
+    "start_s": 1.4,
+    "end_s": 1.9
+  },
+  {
+    "text": "transfer",
+    "start_s": 1.95,
+    "end_s": 2.6
+  },
+  {
+    "text": "planner",
+    "start_s": 2.65,
+    "end_s": 3.3
+  },
+  {
+    "text": "demo.",
+    "start_s": 3.35,
+    "end_s": 4.0
+  },
+  {
+    "text": "Editing",
+    "start_s": 4.4,
+    "end_s": 5.0
+  },
+  {
+    "text": "intelligence",
+    "start_s": 5.05,
+    "end_s": 6.0
+  },
+  {
+    "text": "at",
+    "start_s": 6.1,
+    "end_s": 6.3
+  },
+  {
+    "text": "scale.",
+    "start_s": 6.35,
+    "end_s": 7.2
+  }
+]

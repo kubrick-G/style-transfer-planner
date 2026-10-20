@@ -3,8 +3,8 @@ import json
 import pytest
 
 from core.plan import EditingPlan, FallbackEntry, PlanItem
-from core.ui_helpers import (attribute_rows, card_metrics, fallback_frame, font_preview_html, list_cards, list_videos,
-                             palette_html, plan_frame, safe_stem, scene_frame, timeline_chart)
+from core.ui_helpers import (attribute_rows, card_metrics, fallback_frame, font_preview_html, list_cards, list_transcripts,
+                             list_videos, palette_html, plan_frame, safe_stem, scene_frame, timeline_chart)
 from core.gemini_client import GeminiClient
 from core.mock_gemini import mock_backend
 from core.pipeline import analyze_video
@@ -30,6 +30,55 @@ def test_listing_cards_and_videos(tmp_path):
     for n in ("x.mp4", "y.MOV", "notes.txt"):
         (tmp_path / n).write_text("")
     assert list(list_videos(tmp_path)) == ["x.mp4", "y.MOV"]
+
+
+def test_user_cards_and_videos_override_demo_cards(tmp_path, monkeypatch):
+    u_cards, d_cards = tmp_path / "user_cards", tmp_path / "demo_cards"
+    u_vids, d_vids = tmp_path / "user_vids", tmp_path / "demo_vids"
+    for p in (u_cards, d_cards, u_vids, d_vids):
+        p.mkdir()
+
+    # Cards: clash on "shared", unique on "user_only" and "demo_only"
+    (u_cards / "shared.stylecard.json").write_text('{"from": "user"}')
+    (u_cards / "user_only.stylecard.json").write_text('{"from": "user"}')
+    (d_cards / "shared.stylecard.json").write_text('{"from": "demo"}')
+    (d_cards / "demo_only.stylecard.json").write_text('{"from": "demo"}')
+
+    monkeypatch.setenv("STP_CARDS_DIR", str(u_cards))
+    monkeypatch.setenv("STP_DEMO_CARDS_DIR", str(d_cards))
+
+    cards = list_cards()
+    assert "shared" in cards and "user_only" in cards
+    assert "demo_only (demo)" in cards
+    assert "shared (demo)" not in cards  # user card overrides on clash
+    assert cards["shared"] == u_cards / "shared.stylecard.json"
+
+    # Videos: clash on "clip1.mp4", unique on "u.mp4" and "d.mp4"
+    (u_vids / "clip1.mp4").write_text("")
+    (u_vids / "u.mp4").write_text("")
+    (d_vids / "clip1.mp4").write_text("")
+    (d_vids / "d.mp4").write_text("")
+
+    monkeypatch.setenv("STP_VIDEOS_DIR", str(u_vids))
+    monkeypatch.setenv("STP_DEMO_CLIPS_DIR", str(d_vids))
+
+    videos = list_videos()
+    assert "clip1.mp4" in videos and "u.mp4" in videos
+    assert "d.mp4 (demo)" in videos
+    assert "clip1.mp4 (demo)" not in videos  # user video overrides
+    assert videos["clip1.mp4"] == u_vids / "clip1.mp4"
+
+
+def test_listing_transcripts(tmp_path, monkeypatch):
+    tr_dir = tmp_path / "transcripts"
+    tr_dir.mkdir()
+    (tr_dir / "clip1.transcript.json").write_text("[]")
+    (tr_dir / "notes.txt").write_text("hello")
+    monkeypatch.setenv("STP_DEMO_TRANSCRIPTS_DIR", str(tr_dir))
+    trans = list_transcripts()
+    assert list(trans.keys()) == ["clip1.transcript.json"]
+    assert trans["clip1.transcript.json"] == tr_dir / "clip1.transcript.json"
+
 
 
 def test_safe_stem_strips_unsafe_characters():

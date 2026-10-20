@@ -1,0 +1,358 @@
+{
+  "video": {
+    "duration_s": 10.031,
+    "fps": 24.0,
+    "resolution": [
+      360,
+      640
+    ],
+    "sha256": "7571ac19c3bd3d749dbf7501925aa25171805ea45ffd9244df86325462d55a3b"
+  },
+  "overall": {
+    "pacing": {
+      "avg_shot_len_s": 2.508,
+      "cuts_per_min": 17.94,
+      "pacing_curve": "steady",
+      "n_scenes": 4
+    },
+    "audio": {
+      "has_audio": true,
+      "bpm": 86.1,
+      "beat_sync_score": 1.0,
+      "genre_guess": "MOCK genre",
+      "energy": "medium",
+      "beat_times": [
+        0.72,
+        1.44,
+        2.136,
+        2.856,
+        3.553,
+        4.249,
+        4.969,
+        5.666,
+        6.385,
+        7.082,
+        7.779,
+        8.499,
+        9.195,
+        9.915
+      ],
+      "energy_curve": [
+        0.843,
+        0.281,
+        0.875,
+        0.426,
+        0.281,
+        0.932,
+        0.303,
+        0.28,
+        1.0,
+        0.282,
+        0.28,
+        0.957,
+        0.28,
+        0.28,
+        0.981,
+        0.281,
+        0.693,
+        0.609,
+        0.28,
+        0.893,
+        0.348,
+        0.281,
+        0.83,
+        0.289,
+        0.281,
+        0.991,
+        0.281,
+        0.28,
+        0.942,
+        0.281,
+        0.405,
+        0.883,
+        0.281,
+        0.797,
+        0.488,
+        0.28,
+        0.905,
+        0.319,
+        0.28,
+        0.996,
+        0.174,
+        0.0
+      ],
+      "energy_curve_hz": 4.0
+    },
+    "color": {
+      "palette": [
+        "#5febda",
+        "#0e495f",
+        "#135f78",
+        "#55d2c0",
+        "#eff3f2"
+      ],
+      "grade": "natural",
+      "contrast": "low",
+      "saturation": "high",
+      "warmth": "cool",
+      "grain": false,
+      "vignette": false,
+      "stats": {
+        "saturation": 0.7035,
+        "contrast": 0.0858,
+        "brightness": 0.4973,
+        "warmth_shadows": -0.3563,
+        "warmth_highlights": -0.4113,
+        "black_level": 0.4247,
+        "white_level": 0.5538,
+        "vignette_ratio": 0.9127
+      }
+    },
+    "text": {
+      "present": true,
+      "font_style": {
+        "category": "mono",
+        "weight": "bold",
+        "width": "normal",
+        "geometry": "slab",
+        "mood": [
+          "tech"
+        ]
+      },
+      "case": "lowercase",
+      "position": "lower-third",
+      "color": "#e0e0e0",
+      "outline_or_shadow": "shadow",
+      "animation": "fade",
+      "chunking": "phrase",
+      "variety": "consistent",
+      "description": "MOCK text treatment",
+      "changes_per_s": 1.0,
+      "region": [
+        0.1,
+        0.7,
+        0.9,
+        0.85
+      ]
+    },
+    "transitions": [
+      {
+        "type": "hard cut",
+        "count": 3
+      }
+    ],
+    "camera": {
+      "dominant_movement": "static",
+      "shot_types": [
+        "close-up",
+        "medium",
+        "wide"
+      ]
+    },
+    "mood": "MOCK: placeholder mood",
+    "layout": "full-frame",
+    "structure_notes": "MOCK structure note"
+  },
+  "scenes": [
+    {
+      "index": 0,
+      "start_s": 0.0,
+      "end_s": 2.833,
+      "role": "hook",
+      "energy": "low",
+      "energy_score": 0.243,
+      "shot_type": "close-up",
+      "camera_motion": "static",
+      "motion_magnitude": 0.189,
+      "transition_in": null,
+      "transition_out": "hard cut",
+      "dominant_colors": [
+        "#55d2c9",
+        "#5fece1",
+        "#edf4f2"
+      ],
+      "has_text": true,
+      "cut_on_beat": null
+    },
+    {
+      "index": 1,
+      "start_s": 2.833,
+      "end_s": 5.667,
+      "role": "body",
+      "energy": "low",
+      "energy_score": 0.247,
+      "shot_type": "medium",
+      "camera_motion": "static",
+      "motion_magnitude": 0.207,
+      "transition_in": "hard cut",
+      "transition_out": "hard cut",
+      "dominant_colors": [
+        "#135678",
+        "#0e445e",
+        "#edf1f0"
+      ],
+      "has_text": true,
+      "cut_on_beat": true
+    },
+    {
+      "index": 2,
+      "start_s": 5.667,
+      "end_s": 8.5,
+      "role": "body",
+      "energy": "low",
+      "energy_score": 0.237,
+      "shot_type": "wide",
+      "camera_motion": "static",
+      "motion_magnitude": 0.18,
+      "transition_in": "hard cut",
+      "transition_out": "hard cut",
+      "dominant_colors": [
+        "#55d3b8",
+        "#5feccf",
+        "#edf4f2"
+      ],
+      "has_text": false,
+      "cut_on_beat": true
+    },
+    {
+      "index": 3,
+      "start_s": 8.5,
+      "end_s": 10.031,
+      "role": "end",
+      "energy": "medium",
+      "energy_score": 0.345,
+      "shot_type": "close-up",
+      "camera_motion": "static",
+      "motion_magnitude": 0.203,
+      "transition_in": "hard cut",
+      "transition_out": null,
+      "dominant_colors": [
+        "#0e525f",
+        "#136878",
+        "#edf1f0"
+      ],
+      "has_text": true,
+      "cut_on_beat": true
+    }
+  ],
+  "coupling": {
+    "cuts_on_beat_ratio": 1.0,
+    "text_energy_matches_pacing": null,
+    "transitions_on_music_peaks_ratio": null,
+    "grade_consistent_across_scenes": false,
+    "notes": [
+      "Cuts land on the beat 100% of the time: the edit is rhythm-driven."
+    ]
+  },
+  "confidence": {
+    "pacing": 0.95,
+    "audio": 0.9,
+    "color": 0.85,
+    "text": 0.3,
+    "transitions": 0.3,
+    "camera": 0.3,
+    "mood": 0.3
+  },
+  "provenance": {
+    "measured_by_code": [
+      "pacing",
+      "audio.bpm",
+      "audio.beat_sync_score",
+      "audio.energy",
+      "color.palette",
+      "color.stats/contrast/saturation/warmth/vignette",
+      "scene.motion_magnitude",
+      "scene.energy",
+      "scene.dominant_colors",
+      "coupling"
+    ],
+    "judged_by_gemini": [
+      "color.grade",
+      "color.grain",
+      "scene.shot_type",
+      "scene.camera_motion",
+      "transitions.type",
+      "text.*",
+      "mood",
+      "audio.genre_guess",
+      "structure_notes"
+    ]
+  },
+  "meta": {
+    "schema_version": "1.2",
+    "gemini_mode": "live",
+    "gemini_model": null,
+    "analysis_seconds": 3.65,
+    "stage_seconds": {
+      "probe": 0.726,
+      "scenes": 0.367,
+      "audio": 0.134,
+      "color": 0.442,
+      "motion": 0.992,
+      "transitions": 0.415,
+      "text": 0.233,
+      "overview": 0.319
+    },
+    "gemini_calls": [
+      {
+        "name": "color_grade",
+        "ok": true,
+        "attempts": 1,
+        "seconds": 0.0,
+        "prompt_tokens": 0,
+        "output_tokens": 0,
+        "error": null
+      },
+      {
+        "name": "scene_labels[0:4]",
+        "ok": true,
+        "attempts": 1,
+        "seconds": 0.0,
+        "prompt_tokens": 0,
+        "output_tokens": 0,
+        "error": null
+      },
+      {
+        "name": "transitions[0:3]",
+        "ok": true,
+        "attempts": 1,
+        "seconds": 0.0,
+        "prompt_tokens": 0,
+        "output_tokens": 0,
+        "error": null
+      },
+      {
+        "name": "text_presence",
+        "ok": true,
+        "attempts": 1,
+        "seconds": 0.0,
+        "prompt_tokens": 0,
+        "output_tokens": 0,
+        "error": null
+      },
+      {
+        "name": "text_style",
+        "ok": true,
+        "attempts": 1,
+        "seconds": 0.0,
+        "prompt_tokens": 0,
+        "output_tokens": 0,
+        "error": null
+      },
+      {
+        "name": "overview",
+        "ok": true,
+        "attempts": 1,
+        "seconds": 0.0,
+        "prompt_tokens": 0,
+        "output_tokens": 0,
+        "error": null
+      }
+    ],
+    "degraded": [],
+    "cache_hit": false,
+    "notes": [
+      "Synthetic demo reference (minimalist pacing, cool grade, typewriter typography)."
+    ]
+  }
+}

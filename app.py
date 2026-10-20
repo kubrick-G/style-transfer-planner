@@ -21,7 +21,7 @@ from core.gemini_client import GeminiClient  # noqa: E402
 from core.pipeline import analyze_video  # noqa: E402
 from core.transcript import TranscriptWord, clean_words  # noqa: E402
 from core.ui_helpers import (VIDEO_EXTS, attribute_rows, card_metrics, cards_dir, fallback_frame, font_preview_html,  # noqa: E402
-                             list_cards, list_videos, load_card, palette_html, plan_frame, results_dir, safe_stem,
+                             list_cards, list_transcripts, list_videos, load_card, palette_html, plan_frame, results_dir, safe_stem,
                              scene_frame, timeline_chart, videos_dir)
 from core.utils import AnalysisError  # noqa: E402
 from scripts.analyze_cli import _load_dotenv  # noqa: E402
@@ -37,6 +37,15 @@ ATTR_INFO = {
     "color": ("Color", "Match brightness, contrast, saturation and warmth to the reference."),
     "text": ("Text / captions", "Burn captions in the reference's font, size, color, position and box (needs a transcript)."),
 }
+
+
+def _find_video_for_ref(ref: str, vids: dict[str, Path]) -> Optional[Path]:
+    clean = ref.replace(" (demo)", "").replace(" [demo]", "").strip()
+    candidates = [ref, clean, f"{ref}.mp4", f"{clean}.mp4", f"{clean}.mp4 (demo)"]
+    for c in candidates:
+        if c in vids:
+            return vids[c]
+    return None
 
 
 def chart(c):
@@ -91,8 +100,8 @@ with st.sidebar:
                "Everything else runs locally.")
 
 tab_in, tab_card, tab_borrow, tab_result = st.tabs(["① Inputs", "② Style card", "③ Choose what to borrow", "④ Result"])
-cards = list_cards(cards_dir())
-videos = list_videos(videos_dir())
+cards = list_cards()
+videos = list_videos()
 
 # ------------------------------------------------------------------------------------------- ① inputs
 with tab_in:
@@ -125,8 +134,10 @@ with tab_in:
                     st.rerun()
             if not gemini_ok:
                 st.info("Analysis needs a Gemini key. Add `GEMINI_API_KEY` to `.env` and restart.")
-        elif ref_choice in videos or f"{ref_choice}.mp4" in videos:
-            st.video(str(videos.get(f"{ref_choice}.mp4") or videos[ref_choice]))
+        else:
+            rv = _find_video_for_ref(ref_choice, videos)
+            if rv:
+                st.video(str(rv))
     with right:
         st.subheader("Target · your clip")
         t_choice = st.selectbox("Pick a clip", ["(none)"] + list(videos), key="tgt_choice")
@@ -214,15 +225,34 @@ with tab_borrow:
             a1, a2 = st.columns(2)
             offset = a1.number_input("Caption timing shift (s)", -2.0, 2.0, 0.0, 0.05, help="Negative = earlier")
             wpc = a2.number_input("Words per caption (0 = automatic)", 0, 6, 0)
-            tup = st.file_uploader("Transcript JSON (optional; skips Gemini transcription)", type=["json"], key="tr_upload")
+            bundled_tr = list_transcripts()
+            tr_options = ["(none)"] + list(bundled_tr.keys())
+            default_tr_idx = 0
+            if target_path:
+                target_stem = safe_stem(target_path.name)
+                for idx, name in enumerate(tr_options):
+                    if target_stem in name:
+                        default_tr_idx = idx
+                        break
+            chosen_demo_tr = st.selectbox("Bundled demo transcript (optional)", tr_options, index=default_tr_idx, key="demo_tr_choice")
+            tup = st.file_uploader("…or upload transcript JSON", type=["json"], key="tr_upload")
             if tup:
                 try:
                     raw = json.loads(tup.getvalue().decode("utf-8"))
                     items = raw["words"] if isinstance(raw, dict) else raw
                     words = clean_words([TranscriptWord(**i) for i in items], 3600.0)
-                    st.caption(f"Loaded {len(words)} words.")
+                    st.caption(f"Loaded {len(words)} words from upload.")
                 except Exception as e:
                     st.error(f"Could not read that transcript: {e}")
+            elif chosen_demo_tr != "(none)":
+                try:
+                    raw = json.loads(bundled_tr[chosen_demo_tr].read_text(encoding="utf-8"))
+                    items = raw["words"] if isinstance(raw, dict) else raw
+                    words = clean_words([TranscriptWord(**i) for i in items], 3600.0)
+                    st.caption(f"Loaded {len(words)} words from demo transcript: `{chosen_demo_tr}`.")
+                except Exception as e:
+                    st.error(f"Could not read demo transcript: {e}")
+
             auto_sync = st.checkbox("Auto-correct caption timing (experimental)",
                                     help="Measures the transcript against the audio and shifts ALL captions by the estimated lag, "
                                          "only when the estimate is confident. It cannot fix a short run of late words.")

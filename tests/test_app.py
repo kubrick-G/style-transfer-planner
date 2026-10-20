@@ -51,6 +51,7 @@ def test_app_loads_with_and_without_data(env, monkeypatch, tmp_path):
     assert [t.label for t in at.tabs] == ["① Inputs", "② Style card", "③ Choose what to borrow", "④ Result"]
     assert at.selectbox(key="ref_choice").value == "demo" and len(at.metric) >= 5      # style card tab populated
     monkeypatch.setenv("STP_CARDS_DIR", str(tmp_path / "nothing"))
+    monkeypatch.setenv("STP_DEMO_CARDS_DIR", str(tmp_path / "nothing"))
     empty = run_app()
     assert not empty.exception and empty.selectbox(key="ref_choice").options == ["➕ Analyze a new reference video…"]
 
@@ -127,3 +128,41 @@ def test_analysing_a_new_reference_saves_a_card_and_selects_it(env, monkeypatch,
     assert not at.exception and seen["path"] == "target.mp4"
     assert (env["cards"] / "target.stylecard.json").exists()
     assert at.selectbox(key="ref_choice").value == "target"
+
+
+def test_zero_key_demo_flow(monkeypatch, tmp_path):
+    # Pure zero-key first-run: empty user outputs, no API key, using bundled demo assets
+    empty_cards = tmp_path / "user_cards"
+    empty_vids = tmp_path / "user_vids"
+    out_dir = tmp_path / "out"
+    for d in (empty_cards, empty_vids, out_dir):
+        d.mkdir()
+
+    monkeypatch.setenv("STP_CARDS_DIR", str(empty_cards))
+    monkeypatch.setenv("STP_VIDEOS_DIR", str(empty_vids))
+    monkeypatch.setenv("STP_OUT_DIR", str(out_dir))
+    monkeypatch.setenv("GEMINI_API_KEY", "")
+    monkeypatch.setenv("GOOGLE_API_KEY", "")
+
+    at = run_app()
+    assert not at.exception
+    # Demo cards must be present and selectable
+    ref_opts = at.selectbox(key="ref_choice").options
+    assert any("(demo)" in opt for opt in ref_opts)
+    demo_ref = next(opt for opt in ref_opts if "(demo)" in opt)
+    at.selectbox(key="ref_choice").set_value(demo_ref).run()
+
+    # Demo clips must be present and selectable
+    tgt_opts = at.selectbox(key="tgt_choice").options
+    assert any("(demo)" in opt for opt in tgt_opts)
+    demo_tgt = next(opt for opt in tgt_opts if "(demo)" in opt)
+    at.selectbox(key="tgt_choice").set_value(demo_tgt).run()
+
+    # Apply style without Gemini API (using bundled demo transcript if speech clip)
+    at.button(key="apply_btn").click().run()
+    assert not at.exception and not at.error
+    res_data = at.session_state.get("result")
+    assert res_data is not None
+    assert Path(res_data["res"].output_path).exists()
+    assert any("Finished" in s.value for s in at.success)
+

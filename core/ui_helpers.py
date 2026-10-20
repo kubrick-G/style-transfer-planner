@@ -23,8 +23,20 @@ def cards_dir() -> Path:
     return Path(os.environ.get("STP_CARDS_DIR", ROOT / "outputs"))
 
 
+def demo_cards_dir() -> Path:
+    return Path(os.environ.get("STP_DEMO_CARDS_DIR", ROOT / "data" / "demo" / "cards"))
+
+
 def videos_dir() -> Path:
     return Path(os.environ.get("STP_VIDEOS_DIR", ROOT / "data" / "examples"))
+
+
+def demo_clips_dir() -> Path:
+    return Path(os.environ.get("STP_DEMO_CLIPS_DIR", ROOT / "data" / "demo" / "clips"))
+
+
+def demo_transcripts_dir() -> Path:
+    return Path(os.environ.get("STP_DEMO_TRANSCRIPTS_DIR", ROOT / "data" / "demo" / "transcripts"))
 
 
 def results_dir() -> Path:
@@ -32,15 +44,46 @@ def results_dir() -> Path:
 
 
 def list_cards(d: Optional[Path] = None) -> dict[str, Path]:
-    d = Path(d or cards_dir())
-    return {p.name[: -len(".stylecard.json")]: p for p in sorted(d.glob("*.stylecard.json"))} if d.exists() else {}
+    if d is not None:
+        p = Path(d)
+        return {p.name[: -len(".stylecard.json")]: p for p in sorted(p.glob("*.stylecard.json"))} if p.exists() else {}
+
+    u_dir, dm_dir = cards_dir(), demo_cards_dir()
+    user_cards = {p.name[: -len(".stylecard.json")]: p for p in sorted(u_dir.glob("*.stylecard.json"))} if u_dir.exists() else {}
+    demo_cards = {p.name[: -len(".stylecard.json")]: p for p in sorted(dm_dir.glob("*.stylecard.json"))} if dm_dir.exists() else {}
+
+    res = dict(user_cards)
+    for stem, path in demo_cards.items():
+        if stem not in user_cards:
+            res[f"{stem} (demo)"] = path
+    return res
 
 
 def list_videos(d: Optional[Path] = None) -> dict[str, Path]:
-    d = Path(d or videos_dir())
-    if not d.exists():
+    if d is not None:
+        p = Path(d)
+        if not p.exists():
+            return {}
+        return {p.name: p for p in sorted(p.iterdir()) if p.is_file() and p.suffix.lower() in VIDEO_EXTS}
+
+    u_dir, dm_dir = videos_dir(), demo_clips_dir()
+    user_videos = {p.name: p for p in sorted(u_dir.iterdir()) if p.is_file() and p.suffix.lower() in VIDEO_EXTS} if u_dir.exists() else {}
+    demo_videos = {p.name: p for p in sorted(dm_dir.iterdir()) if p.is_file() and p.suffix.lower() in VIDEO_EXTS} if dm_dir.exists() else {}
+
+    res = dict(user_videos)
+    for name, path in demo_videos.items():
+        stem = Path(name).stem
+        # user video overrides on name or stem clash
+        if name not in user_videos and not any(Path(uv).stem == stem for uv in user_videos):
+            res[f"{name} (demo)"] = path
+    return res
+
+
+def list_transcripts(d: Optional[Path] = None) -> dict[str, Path]:
+    p = Path(d or demo_transcripts_dir())
+    if not p.exists():
         return {}
-    return {p.name: p for p in sorted(d.iterdir()) if p.is_file() and p.suffix.lower() in VIDEO_EXTS}
+    return {f.name: f for f in sorted(p.glob("*.json"))}
 
 
 def load_card(path: Path) -> StyleCard:
