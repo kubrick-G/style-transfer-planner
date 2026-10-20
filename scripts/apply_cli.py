@@ -20,10 +20,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from core.apply_engine import DEFAULT_ZOOM, apply_style  # noqa: E402
 from core.bundles import ATTRIBUTES  # noqa: E402
 from core.schema import StyleCard  # noqa: E402
-from core.gemini_client import GeminiClient  # noqa: E402
+from core.gemini_client import GeminiClient as _BaseGeminiClient  # noqa: E402
 from core.transcript import load_words_json  # noqa: E402
 from core.usage_cap import CappedGeminiClient  # noqa: E402
 from core.utils import AnalysisError  # noqa: E402
+
+GeminiClient = _BaseGeminiClient
 
 
 def summary(res) -> str:
@@ -98,7 +100,7 @@ def main(argv=None) -> int:
         if words is None and "text" in sel:
             from scripts.analyze_cli import _load_dotenv
             _load_dotenv()
-            c = CappedGeminiClient()
+            c = GeminiClient() if GeminiClient is not _BaseGeminiClient else CappedGeminiClient()
             client = c if c.available else None
         res = apply_style(card, a.target, sel, str(out), strength=a.strength, zoom=a.zoom, client=client,
                           transcript=words, caption_offset_s=a.caption_offset,
