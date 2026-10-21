@@ -1,8 +1,11 @@
 # Style Transfer Planner 🎬
 
-[![Tests](https://github.com/cardboard-internship/style-transfer-planner/actions/workflows/tests.yml/badge.svg)](https://github.com/cardboard-internship/style-transfer-planner/actions/workflows/tests.yml)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://style-transfer-planner-x8uaqyj7mmcbnfqsza6ayd.streamlit.app/)
+[![Tests](https://github.com/kubrick-G/style-transfer-planner/actions/workflows/tests.yml/badge.svg)](https://github.com/kubrick-G/style-transfer-planner/actions/workflows/tests.yml)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%20%7C%203.14-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+**Live Demo**: [https://style-transfer-planner-x8uaqyj7mmcbnfqsza6ayd.streamlit.app/](https://style-transfer-planner-x8uaqyj7mmcbnfqsza6ayd.streamlit.app/)
 
 An agentic video editing intelligence system addressing **Cardboard's Hard Problem #6: Style References**. Ingests a short reference video, decomposes it into actionable style attributes (pacing, rhythm, color grade, typography, transitions), lets users choose what to borrow, reproduces them with FFmpeg, and logs fallbacks transparently when an asset or effect cannot be copied.
 

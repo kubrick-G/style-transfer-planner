@@ -1,6 +1,6 @@
 # Outreach Message for Cardboard
 
-**Live Demo**: [https://style-transfer-planner.streamlit.app](https://style-transfer-planner.streamlit.app)  
+**Live Demo**: [https://style-transfer-planner-x8uaqyj7mmcbnfqsza6ayd.streamlit.app/](https://style-transfer-planner-x8uaqyj7mmcbnfqsza6ayd.streamlit.app/)  
 **GitHub Repository**: [https://github.com/kubrick-G/style-transfer-planner](https://github.com/kubrick-G/style-transfer-planner)  
 **Demo Video (75s)**: [https://youtu.be/<your-demo-id>](https://youtu.be/<your-demo-id>)  
 
