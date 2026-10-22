@@ -39,7 +39,7 @@ def _load_st_secrets() -> None:
     """Read secrets from st.secrets as fallback to environment variables without logging or printing."""
     try:
         for k in ("GEMINI_API_KEY", "GOOGLE_API_KEY", "GEMINI_MODEL", "GEMINI_MIN_INTERVAL_S",
-                  "STP_PUBLIC_MODE", "STP_DAILY_GEMINI_LIMIT", "STP_ALLOW_ANALYSIS",
+                  "STP_PUBLIC_MODE", "STP_DAILY_GEMINI_LIMIT",
                   "STP_MAX_CLIP_S", "STP_MAX_UPLOAD_MB"):
             if k in st.secrets and k not in os.environ:
                 val = str(st.secrets[k]).strip()
@@ -156,13 +156,20 @@ with tab_in:
         options = (list(cards) + [NEW]) if allow_analysis() else list(cards)
         ref_choice = st.selectbox("Reference style card", options, key="ref_choice",
                                   help="Cards are saved in outputs/ by analyze_cli.py or by this app.")
-        if is_public_mode() and not allow_analysis():
-            st.caption("ℹ️ In public demo mode, analyzing new references is disabled. Choose from the demo reference styles above.")
-        if ref_choice == NEW:
-            st.caption(f"Upload your reference video (max {max_clip_seconds():.0f} s) or select one below.")
-            up = st.file_uploader("Upload a reference video", type=[e[1:] for e in VIDEO_EXTS], key="an_upload")
-            src_name = st.selectbox("…or pick from example videos", list(videos) or ["(no videos in data/examples)"], key="an_src")
-            src = save_upload(up, "uploads") if up else videos.get(src_name)
+        up = None
+        if allow_analysis():
+            up = st.file_uploader(f"…or upload your reference video (max {max_clip_seconds():.0f} s)",
+                                  type=[e[1:] for e in VIDEO_EXTS], key="an_upload")
+
+        if up or ref_choice == NEW:
+            if ref_choice == NEW and not up:
+                src_name = st.selectbox("Video to analyse", list(videos) or ["(no videos in data/examples)"], key="an_src")
+                src = videos.get(src_name)
+            else:
+                src = save_upload(up, "uploads") if up else None
+                if not src and "an_src" in ss:
+                    src = videos.get(ss["an_src"])
+
             if src:
                 st.video(str(src))
             if st.button("✨ Analyze with Gemini", type="primary", key="an_btn", disabled=not (gemini_ok and src)):
@@ -202,17 +209,13 @@ with tab_in:
                         st.rerun()
                     except Exception as err:
                         st.error(f"Invalid style card: {err}")
-            if cards:
+            if cards and ref_choice == NEW:
                 st.button("↩️ Cancel & return to demo style cards", key="cancel_upload_ref",
                           on_click=_select_ref, args=(list(cards)[0],))
         else:
             if allow_analysis():
-                col_info, col_btn = st.columns([3, 2])
-                with col_info:
-                    st.caption("Using preset style card. Want to use your own video?")
-                with col_btn:
-                    st.button("➕ Upload own reference", key="switch_to_upload",
-                              on_click=_select_ref, args=(NEW,))
+                st.button("➕ Analyze a reference video from library", key="switch_to_upload",
+                          on_click=_select_ref, args=(NEW,))
             rv = _find_video_for_ref(ref_choice, videos)
             if rv:
                 st.video(str(rv))
