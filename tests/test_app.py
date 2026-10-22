@@ -204,14 +204,24 @@ def test_app_public_mode_hardening(env, monkeypatch):
     assert not at.exception
     # Privacy notice in sidebar
     assert any("Privacy Notice" in info.value for info in at.sidebar.info)
-    # Analysis is disabled for visitors
+    # Analysis is allowed by default so users can upload their reference video
     ref_opts = at.selectbox(key="ref_choice").options
-    assert "➕ Analyze a new reference video…" not in ref_opts
+    assert "➕ Analyze a new reference video…" in ref_opts
 
-    # Allowing analysis enables it
-    monkeypatch.setenv("STP_ALLOW_ANALYSIS", "1")
+    # Disabling analysis explicitly hides it
+    monkeypatch.setenv("STP_ALLOW_ANALYSIS", "0")
     at2 = run_app()
     assert not at2.exception
-    assert "➕ Analyze a new reference video…" in at2.selectbox(key="ref_choice").options
+    assert "➕ Analyze a new reference video…" not in at2.selectbox(key="ref_choice").options
+
+
+def test_switch_to_upload_reference_button(env):
+    at = run_app()
+    assert not at.exception
+    assert at.selectbox(key="ref_choice").value == "demo"
+    at.button(key="switch_to_upload").click().run()
+    assert not at.exception
+    assert at.selectbox(key="ref_choice").value == "➕ Analyze a new reference video…"
+
 
 

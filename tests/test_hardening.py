@@ -30,11 +30,17 @@ class FakeUpload:
 
 def test_public_mode_flags(monkeypatch):
     monkeypatch.delenv("STP_PUBLIC_MODE", raising=False)
+    monkeypatch.delenv("STP_ALLOW_ANALYSIS", raising=False)
     assert not is_public_mode()
     assert allow_analysis()
 
+    # In public mode, analysis defaults to enabled so users can upload their own reference
     monkeypatch.setenv("STP_PUBLIC_MODE", "1")
     assert is_public_mode()
+    assert allow_analysis()
+
+    # Explicitly disabling analysis
+    monkeypatch.setenv("STP_ALLOW_ANALYSIS", "0")
     assert not allow_analysis()
 
     monkeypatch.setenv("STP_ALLOW_ANALYSIS", "1")

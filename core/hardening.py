@@ -26,9 +26,16 @@ def is_public_mode() -> bool:
 
 
 def allow_analysis() -> bool:
-    if not is_public_mode():
-        return True
-    return os.environ.get("STP_ALLOW_ANALYSIS", "0").strip().lower() in ("1", "true", "yes")
+    """Check if analyzing new reference videos is permitted.
+
+    Defaults to True so users can upload and analyze their own reference videos.
+    Can be explicitly disabled in public mode by setting STP_ALLOW_ANALYSIS to '0',
+    'false', or 'no'.
+    """
+    val = os.environ.get("STP_ALLOW_ANALYSIS")
+    if val is not None:
+        return val.strip().lower() in ("1", "true", "yes")
+    return True
 
 
 def max_clip_seconds() -> float:

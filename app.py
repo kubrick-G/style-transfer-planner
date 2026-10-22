@@ -21,6 +21,7 @@ from core.debug_overlay import annotate_cuts, cut_sheet  # noqa: E402
 from core.fonts import resolve_font  # noqa: E402
 from core.gemini_client import GeminiClient  # noqa: E402
 from core.pipeline import analyze_video  # noqa: E402
+from core.schema import StyleCard  # noqa: E402
 from core.transcript import TranscriptWord, clean_words  # noqa: E402
 from core.ui_helpers import (VIDEO_EXTS, attribute_rows, card_metrics, cards_dir, fallback_frame, font_preview_html,  # noqa: E402
                              list_cards, list_transcripts, list_videos, load_card, palette_html, plan_frame, results_dir, safe_stem,
@@ -68,6 +69,11 @@ def _find_video_for_ref(ref: str, vids: dict[str, Path]) -> Optional[Path]:
     for c in candidates:
         if c in vids:
             return vids[c]
+    uploads_dir = results_dir() / "uploads"
+    if uploads_dir.exists():
+        for f in uploads_dir.iterdir():
+            if f.is_file() and (f.stem == clean or safe_stem(f.name) == clean) and f.suffix.lower() in VIDEO_EXTS:
+                return f
     return None
 
 
@@ -95,6 +101,10 @@ def save_upload(upload, subdir: str) -> Optional[Path]:
     except Exception as e:
         st.error(str(e))
         return None
+
+
+def _select_ref(val: str) -> None:
+    ss["ref_choice"] = val
 
 
 # ------------------------------------------------------------------------------------------------ state
@@ -149,11 +159,13 @@ with tab_in:
         if is_public_mode() and not allow_analysis():
             st.caption("ℹ️ In public demo mode, analyzing new references is disabled. Choose from the demo reference styles above.")
         if ref_choice == NEW:
-            st.caption(f"Pick a video to analyse, or upload one (max {max_clip_seconds():.0f} s).")
-            src_name = st.selectbox("Video to analyse", list(videos) or ["(no videos in data/examples)"], key="an_src")
-            up = st.file_uploader("…or upload a reference", type=[e[1:] for e in VIDEO_EXTS], key="an_upload")
+            st.caption(f"Upload your reference video (max {max_clip_seconds():.0f} s) or select one below.")
+            up = st.file_uploader("Upload a reference video", type=[e[1:] for e in VIDEO_EXTS], key="an_upload")
+            src_name = st.selectbox("…or pick from example videos", list(videos) or ["(no videos in data/examples)"], key="an_src")
             src = save_upload(up, "uploads") if up else videos.get(src_name)
-            if st.button("Analyze with Gemini", type="primary", key="an_btn", disabled=not (gemini_ok and src)):
+            if src:
+                st.video(str(src))
+            if st.button("✨ Analyze with Gemini", type="primary", key="an_btn", disabled=not (gemini_ok and src)):
                 with st.status("Analysing the reference…", expanded=True) as status:
                     bar = st.progress(0.0, text="starting")
                     try:
@@ -175,7 +187,32 @@ with tab_in:
                     st.rerun()
             if not gemini_ok:
                 st.info("Analysis needs a Gemini key. Add `GEMINI_API_KEY` to `.env` and restart.")
+            with st.expander("📄 Or upload a saved .stylecard.json (zero API calls)"):
+                card_up = st.file_uploader("Upload .stylecard.json", type=["json"], key="card_json_upload")
+                if card_up:
+                    try:
+                        content = card_up.getbuffer().tobytes().decode("utf-8")
+                        StyleCard.model_validate_json(content)
+                        stem = safe_stem(card_up.name.replace(".stylecard.json", "").replace(".json", ""))
+                        out = cards_dir() / f"{stem}.stylecard.json"
+                        out.parent.mkdir(parents=True, exist_ok=True)
+                        out.write_text(content, encoding="utf-8")
+                        ss["_pending_ref"] = stem
+                        st.success(f"Imported style card '{stem}'!")
+                        st.rerun()
+                    except Exception as err:
+                        st.error(f"Invalid style card: {err}")
+            if cards:
+                st.button("↩️ Cancel & return to demo style cards", key="cancel_upload_ref",
+                          on_click=_select_ref, args=(list(cards)[0],))
         else:
+            if allow_analysis():
+                col_info, col_btn = st.columns([3, 2])
+                with col_info:
+                    st.caption("Using preset style card. Want to use your own video?")
+                with col_btn:
+                    st.button("➕ Upload own reference", key="switch_to_upload",
+                              on_click=_select_ref, args=(NEW,))
             rv = _find_video_for_ref(ref_choice, videos)
             if rv:
                 st.video(str(rv))
